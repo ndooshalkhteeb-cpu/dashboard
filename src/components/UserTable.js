@@ -1,7 +1,7 @@
 // src/components/UserTable.js
 import React from "react";
 
-const SERVER_URL = process.env.REACT_APP_SERVER_URL || "https://YOUR-SERVER.onrender.com";
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || "https://server-khas.onrender.com";
 
 export default function UserTable({ users, cardIp, onShowCard, onShowInfo }) {
   const handleDelete = async (ip) => {
