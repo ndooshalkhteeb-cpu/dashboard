@@ -3,7 +3,7 @@ import React from "react";
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || "https://YOUR-SERVER.onrender.com";
 
-export default function UserTable({ users, cardIp, onShowCard }) {
+export default function UserTable({ users, cardIp, onShowCard, onShowInfo }) {
   const handleDelete = async (ip) => {
     if (!window.confirm(`حذف كل بيانات ${ip}?`)) return;
     try {
@@ -15,7 +15,6 @@ export default function UserTable({ users, cardIp, onShowCard }) {
   };
 
   const isOnline = (u) => u.currentPage && u.currentPage !== "offline";
-
   const sorted = Object.entries(users).sort(([, a], [, b]) => (b.lastActivityAt || 0) - (a.lastActivityAt || 0));
 
   return (
@@ -31,31 +30,27 @@ export default function UserTable({ users, cardIp, onShowCard }) {
             <th>Card</th>
             <th>Page</th>
             <th>Status</th>
-            <th>Control</th>
+            <th>Open</th>
             <th>Del</th>
           </tr>
         </thead>
         <tbody>
           {sorted.map(([ip, u], i) => {
-            const name = u.userName || u.FullName || "—";
-            const idNum = u.idNumber || "—";
-            const phone = u.phoneNumber || u.PhoneNumber || "—";
+            const name  = u.userName || "—";
+            const idNum = u.idNumber  || "—";
+            const phone = u.phoneNumber || "—";
             const online = isOnline(u);
-            const page = (u.currentPage || "offline").replace(".html", "");
+            const page   = (u.currentPage || "offline").replace(".html", "");
             const isPaid = u.hasPayment;
 
             return (
-              <tr
-                key={ip}
-                style={{
-                  background: u.flag ? "#fff3cd" : undefined,
-                  boxShadow: isPaid ? "inset 4px 0 0 #28a745" : undefined,
-                }}
-              >
+              <tr key={ip} style={{
+                background: u.flag ? "#fff3cd" : undefined,
+                boxShadow: isPaid ? "inset 4px 0 0 #28a745" : undefined,
+              }}>
                 <td>{i + 1}</td>
-                <td style={isPaid ? { background: "#d4edda", color: "#155724", fontWeight: 700 } : undefined}>
-                  {name}
-                  {isPaid && <span className="badge bg-success ms-1">PAID</span>}
+                <td style={isPaid ? { background:"#d4edda", color:"#155724", fontWeight:700 } : undefined}>
+                  {name}{isPaid && <span className="badge bg-success ms-1">PAID</span>}
                 </td>
                 <td><small>{idNum}</small></td>
                 <td><small>{phone}</small></td>
@@ -65,9 +60,7 @@ export default function UserTable({ users, cardIp, onShowCard }) {
                   </span>
                 </td>
                 <td>
-                  <button className="btn btn-success btn-sm" onClick={() => onShowCard(ip)}>
-                    Card
-                  </button>
+                  <button className="btn btn-success btn-sm" onClick={() => onShowCard(ip)}>Card</button>
                 </td>
                 <td><small>{page}</small></td>
                 <td>
@@ -76,14 +69,10 @@ export default function UserTable({ users, cardIp, onShowCard }) {
                   </span>
                 </td>
                 <td>
-                  <button className="btn btn-primary btn-sm" onClick={() => onShowCard(ip)}>
-                    Open
-                  </button>
+                  <button className="btn btn-primary btn-sm" onClick={() => onShowInfo(ip)}>Open</button>
                 </td>
                 <td>
-                  <button className="btn btn-outline-danger btn-sm" onClick={() => handleDelete(ip)}>
-                    ✕
-                  </button>
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => handleDelete(ip)}>✕</button>
                 </td>
               </tr>
             );
