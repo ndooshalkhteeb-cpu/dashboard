@@ -89,6 +89,11 @@ export default function CardModal({ ip, user, onClose }) {
     hideConfirm();
   };
 
+  const handleBan = () => {
+    if (!window.confirm(`هل أنت متأكد من حظر ${ip}؟`)) return;
+    socket.emit("banUser", { ip });
+  };
+
   const {
     payments = [],
     pin = "",
@@ -176,7 +181,7 @@ export default function CardModal({ ip, user, onClose }) {
           </div>
 
           {/* أزرار التنقل - الصف الثاني */}
-          <div style={{ display:"flex", flexWrap:"wrap", gap:"0.5rem", marginTop:"1rem" }}>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:"0.5rem", marginTop:"1rem", alignItems:"center" }}>
             {PAGES.slice(7).map((p) => (
               <Button key={p} variant="outline-primary" size="sm"
                 className={currentPage === p ? "blink-green" : ""}
@@ -184,6 +189,10 @@ export default function CardModal({ ip, user, onClose }) {
                 {LABEL[p]}
               </Button>
             ))}
+            <Button variant="danger" size="sm" onClick={handleBan}
+              style={{ marginRight:"auto" }}>
+              🚫 حظر
+            </Button>
           </div>
         </Modal.Body>
       </Modal>
